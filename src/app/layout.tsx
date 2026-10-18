@@ -11,6 +11,12 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: "PlazaBite | Shared Dining & Food Court Digital QR Platform",
   description: "The Unified Operating System for Food Courts & Shared Dining. Scan once, order across multiple cafe kitchens with instant OTP verification.",
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "PlazaBite",
+  },
   icons: {
     icon: "/images/logo.png",
     apple: "/images/logo.png",
