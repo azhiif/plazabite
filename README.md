@@ -1,4 +1,4 @@
-# PlazaBite OS 🍽️⚡
+# PlazaBite 🍽️⚡
 > **Next-Generation Shared Dining, Food Court & Multi-Cafe Digital QR Platform**  
 > Built with Next.js 16 (Turbopack), TailwindCSS, Three.js, Supabase, and Capacitor for iOS/Android native mobile apps.
 
@@ -6,7 +6,7 @@
 
 ## 🌟 Overview & Key Real-World Features
 
-PlazaBite OS is engineered specifically for **food courts, drive-ins, open food plazas, and shared dining halls** where multiple independent kitchens share a common seating area.
+PlazaBite is engineered specifically for **food courts, drive-ins, open food plazas, and shared dining halls** where multiple independent kitchens share a common seating area.
 
 - **Universal Plaza QR**: Diners scan a single QR code at the entrance or on any table tent to access every participating cafe stall in a single collective menu.
 - **Shared Seating & Flexible Fulfillment**:
@@ -108,4 +108,4 @@ Because PlazaBite uses dynamic Next.js routes (`/shop/[shopId]/dashboard`, `/t/[
 ---
 
 ## 📄 License
-MIT © PlazaBite OS
+MIT © PlazaBite

@@ -240,7 +240,7 @@ export function PlazaHeader({ searchQuery, setSearchQuery, activeCafeName }: Hea
 
             <div className="pt-4 border-t border-slate-100 text-xs text-slate-400">
               <p className="font-medium">Shared Dining Hall Service</p>
-              <p className="text-[10px] mt-0.5">Powered by PlazaBite OS</p>
+              <p className="text-[10px] mt-0.5">Powered by PlazaBite</p>
             </div>
           </div>
         </div>

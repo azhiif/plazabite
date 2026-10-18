@@ -215,7 +215,7 @@ export default function AdminPage() {
         </main>
 
         <footer className="text-center text-xs text-slate-500 py-3">
-          &copy; {new Date().getFullYear()} PlazaBite OS. SuperAdmin Security Gateway.
+          &copy; {new Date().getFullYear()} PlazaBite. SuperAdmin Security Gateway.
         </footer>
       </div>
     )

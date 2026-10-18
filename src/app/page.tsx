@@ -300,7 +300,7 @@ export default function HomePage() {
       {/* ----------------------------------------------------------------------- */}
       <footer className="mt-auto border-t border-white/[0.08] py-8 text-xs text-zinc-500">
         <div className="max-w-5xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p>&copy; {new Date().getFullYear()} PlazaBite OS. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} PlazaBite. All rights reserved.</p>
 
           <div className="flex items-center gap-5 text-zinc-400">
             <Link href="/menu" className="hover:text-white transition-colors">Menu</Link>

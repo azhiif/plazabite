@@ -49,18 +49,9 @@ export function BrandLogo({
 
       {withText && (
         <div className="flex flex-col leading-none">
-          <div className="flex items-center gap-1.5">
-            <span className={`font-black tracking-tighter ${isDark ? 'text-white' : 'text-slate-900'} ${iconDimensions.text}`}>
-              Plaza<span className="text-[#E50914]">Bite</span>
-            </span>
-            <span className={`text-[9px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded-full ${
-              isDark 
-                ? 'bg-red-500/20 text-red-400 border border-red-500/30' 
-                : 'bg-red-100 text-[#E50914]'
-            }`}>
-              OS
-            </span>
-          </div>
+          <span className={`font-black tracking-tighter ${isDark ? 'text-white' : 'text-slate-900'} ${iconDimensions.text}`}>
+            Plaza<span className="text-[#E50914]">Bite</span>
+          </span>
           {subtitle && (
             <span className={`font-bold uppercase tracking-widest mt-0.5 ${isDark ? 'text-zinc-400' : 'text-slate-400'} ${iconDimensions.sub}`}>
               {subtitle}

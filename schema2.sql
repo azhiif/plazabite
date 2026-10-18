@@ -1,5 +1,5 @@
 -- =============================================================================
--- PLAZABITE OS - SCHEMA 2 (FAST DELTA MIGRATION)
+-- PLAZABITE - SCHEMA 2 (FAST DELTA MIGRATION)
 -- =============================================================================
 -- Since you already ran schema.sql, DO NOT drop or recreate tables!
 -- Just copy & run this short delta in Supabase SQL Editor.
