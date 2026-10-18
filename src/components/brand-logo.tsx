@@ -9,6 +9,7 @@ interface BrandLogoProps {
   subtitle?: string
   clickable?: boolean
   className?: string
+  variant?: 'light' | 'dark' | 'auto'
 }
 
 export function BrandLogo({
@@ -16,7 +17,8 @@ export function BrandLogo({
   withText = true,
   subtitle,
   clickable = true,
-  className = ''
+  className = '',
+  variant = 'auto'
 }: BrandLogoProps) {
   const iconDimensions = {
     sm: { w: 28, h: 28, text: 'text-lg', sub: 'text-[9px]' },
@@ -25,11 +27,14 @@ export function BrandLogo({
     xl: { w: 64, h: 64, text: 'text-4xl', sub: 'text-sm' },
   }[size]
 
+  // Detect dark background from variant or className
+  const isDark = variant === 'dark' || (variant === 'auto' && className.includes('text-white'))
+
   const content = (
     <div className={`flex items-center gap-2.5 select-none ${className}`}>
-      {/* Brand Icon Image with fallback SVG */}
+      {/* Brand Icon Image */}
       <div 
-        className="relative overflow-hidden rounded-2xl shadow-xs border border-slate-700/30 flex items-center justify-center"
+        className="relative overflow-hidden rounded-2xl shadow-xs border border-white/10 flex items-center justify-center shrink-0"
         style={{ width: iconDimensions.w, height: iconDimensions.h }}
       >
         <Image
@@ -44,16 +49,20 @@ export function BrandLogo({
 
       {withText && (
         <div className="flex flex-col leading-none">
-          <div className="flex items-center gap-1">
-            <span className={`font-black tracking-tighter text-slate-900 ${iconDimensions.text}`}>
+          <div className="flex items-center gap-1.5">
+            <span className={`font-black tracking-tighter ${isDark ? 'text-white' : 'text-slate-900'} ${iconDimensions.text}`}>
               Plaza<span className="text-[#E50914]">Bite</span>
             </span>
-            <span className="text-[9px] font-black uppercase tracking-wider bg-red-100 text-[#E50914] px-1.5 py-0.5 rounded-full">
+            <span className={`text-[9px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded-full ${
+              isDark 
+                ? 'bg-red-500/20 text-red-400 border border-red-500/30' 
+                : 'bg-red-100 text-[#E50914]'
+            }`}>
               OS
             </span>
           </div>
           {subtitle && (
-            <span className={`font-bold uppercase tracking-widest text-slate-400 mt-0.5 ${iconDimensions.sub}`}>
+            <span className={`font-bold uppercase tracking-widest mt-0.5 ${isDark ? 'text-zinc-400' : 'text-slate-400'} ${iconDimensions.sub}`}>
               {subtitle}
             </span>
           )}
