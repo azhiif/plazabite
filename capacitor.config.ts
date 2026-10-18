@@ -5,6 +5,7 @@ const config: CapacitorConfig = {
   appName: 'PlazaBite Partner',
   webDir: 'out',
   server: {
+    url: 'https://plazabite.vercel.app/partner',
     androidScheme: 'https',
     cleartext: true
   },
