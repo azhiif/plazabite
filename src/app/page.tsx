@@ -8,7 +8,7 @@ import { Shop } from '@/lib/types'
 import { BrandLogo } from '@/components/brand-logo'
 import { RegisterCafeModal } from '@/components/register-cafe-modal'
 import { Landing3DHero } from '@/components/landing-3d-hero'
-import { ArrowRight, Menu, X, ArrowUpRight } from 'lucide-react'
+import { ArrowRight, Menu, X } from 'lucide-react'
 
 export default function HomePage() {
   const [shops, setShops] = useState<Shop[]>([])
@@ -260,11 +260,11 @@ export default function HomePage() {
                       {shop.estimated_time || '15 min'}
                     </span>
                     <Link
-                      href={`/shop/${shop.id}/dashboard`}
+                      href="/menu"
                       className="text-zinc-400 hover:text-white text-[11px] font-medium flex items-center gap-1 transition-colors"
                     >
-                      <span>Kitchen</span>
-                      <ArrowUpRight size={12} />
+                      <span>View Dishes</span>
+                      <ArrowRight size={11} />
                     </Link>
                   </div>
                 </div>
