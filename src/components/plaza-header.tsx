@@ -1,12 +1,14 @@
 'use client'
 
-import { useState } from 'react'
-import { Search, MapPin, Menu, X, Bell, PhoneCall, History, Sparkles, Check, Store, Shield, QrCode } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { createPortal } from 'react-dom'
+import { Search, MapPin, MoreVertical, X, Bell, PhoneCall, History, Sparkles, Check, Store, Shield, QrCode, ChevronRight } from 'lucide-react'
 import { useCart } from '@/lib/cart-store'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog'
 import { RegisterCafeModal } from '@/components/register-cafe-modal'
 import { toast } from 'sonner'
 import Link from 'next/link'
+import Image from 'next/image'
 
 interface HeaderProps {
   searchQuery: string
@@ -20,8 +22,25 @@ export function PlazaHeader({ searchQuery, setSearchQuery, activeCafeName }: Hea
   const [isTableModalOpen, setIsTableModalOpen] = useState(false)
   const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false)
   const [selectedTable, setSelectedTable] = useState(String(tableNumber || '4'))
+  const [mounted, setMounted] = useState(false)
 
   const tables = Array.from({ length: 20 }, (_, i) => String(i + 1))
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  // Prevent background scrolling when options drawer is open
+  useEffect(() => {
+    if (isMenuOpen) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = ''
+    }
+    return () => {
+      document.body.style.overflow = ''
+    }
+  }, [isMenuOpen])
 
   const handleSaveTable = () => {
     setTableNumber(selectedTable)
@@ -41,13 +60,14 @@ export function PlazaHeader({ searchQuery, setSearchQuery, activeCafeName }: Hea
       <div className="max-w-4xl mx-auto px-4 pt-3 pb-2.5">
         {/* Top brand & actions line */}
         <div className="flex items-center justify-between gap-2 mb-3">
-          {/* Menu Drawer Toggle */}
+          {/* Top-Left 3-Dots Options Trigger */}
           <button
             onClick={() => setIsMenuOpen(true)}
-            aria-label="Open menu"
-            className="p-2 -ml-2 text-slate-700 hover:text-black hover:bg-slate-100 rounded-full transition-colors active:scale-95"
+            aria-label="Options menu"
+            className="w-9 h-9 -ml-1 text-slate-700 hover:text-black hover:bg-slate-100 rounded-full flex items-center justify-center transition-all active:scale-95 cursor-pointer"
+            title="Options"
           >
-            <Menu size={22} strokeWidth={2.2} />
+            <MoreVertical size={20} strokeWidth={2.4} />
           </button>
 
           {/* Center Brand Title */}
@@ -68,7 +88,7 @@ export function PlazaHeader({ searchQuery, setSearchQuery, activeCafeName }: Hea
           {/* Table Pill / Selector */}
           <button
             onClick={() => setIsTableModalOpen(true)}
-            className="flex items-center gap-1.5 bg-red-50 hover:bg-red-100 border border-red-200/80 text-[#E50914] px-3 py-1.5 rounded-full transition-all active:scale-95 shadow-xs"
+            className="flex items-center gap-1.5 bg-red-50 hover:bg-red-100 border border-red-200/80 text-[#E50914] px-3 py-1.5 rounded-full transition-all active:scale-95 shadow-xs cursor-pointer"
           >
             <MapPin size={14} className="text-[#E50914] animate-pulse" />
             <span className="text-xs font-extrabold tracking-tight">Table {tableNumber || '4'}</span>
@@ -90,7 +110,7 @@ export function PlazaHeader({ searchQuery, setSearchQuery, activeCafeName }: Hea
           {searchQuery && (
             <button
               onClick={() => setSearchQuery('')}
-              className="absolute right-3 p-1 rounded-full text-slate-400 hover:text-slate-600 hover:bg-slate-200"
+              className="absolute right-3 p-1 rounded-full text-slate-400 hover:text-slate-600 hover:bg-slate-200 cursor-pointer"
             >
               <X size={16} />
             </button>
@@ -98,152 +118,218 @@ export function PlazaHeader({ searchQuery, setSearchQuery, activeCafeName }: Hea
         </div>
       </div>
 
-      {/* Slide-out Navigation Drawer */}
-      {isMenuOpen && (
-        <div className="fixed inset-0 z-50 flex">
+      {/* Slide-out Navigation Drawer / Options Menu portaled directly to body to avoid backdrop-blur containment */}
+      {isMenuOpen && mounted && createPortal(
+        <div className="fixed inset-0 z-50 flex animate-in fade-in duration-200">
+          {/* Backdrop */}
           <div 
-            className="fixed inset-0 bg-black/40 backdrop-blur-xs transition-opacity" 
+            className="fixed inset-0 bg-black/60 backdrop-blur-xs transition-opacity cursor-pointer" 
             onClick={() => setIsMenuOpen(false)} 
           />
-          <div className="relative z-10 w-4/5 max-w-xs bg-white h-full shadow-2xl p-6 flex flex-col justify-between animate-in slide-in-from-left duration-200">
-            <div>
-              <div className="flex items-center justify-between pb-4 border-b border-slate-100">
-                <div className="flex items-center gap-2">
-                  <span className="text-xl font-black text-[#E50914] tracking-tight">CAFFELLON</span>
-                  <span className="text-[10px] bg-red-100 text-red-700 font-bold px-2 py-0.5 rounded-full">Plaza</span>
-                </div>
-                <button 
-                  onClick={() => setIsMenuOpen(false)}
-                  className="p-1 rounded-full text-slate-400 hover:bg-slate-100"
-                >
-                  <X size={20} />
-                </button>
-              </div>
 
-              <div className="py-4 border-b border-slate-100">
-                <div className="p-3 bg-red-50/70 border border-red-100 rounded-2xl flex items-center justify-between">
+          {/* Drawer Panel */}
+          <div className="relative z-10 w-[85vw] max-w-xs sm:max-w-sm bg-white h-screen max-h-screen shadow-2xl flex flex-col justify-between overflow-hidden animate-in slide-in-from-left duration-200 border-r border-slate-200">
+            {/* Drawer Header */}
+            <div className="bg-[#0A0C10] text-white p-4.5 sm:p-5 flex items-center justify-between border-b border-white/10 shrink-0">
+              <div className="flex items-center gap-3">
+                <div className="relative w-9 h-9 rounded-xl overflow-hidden border border-white/10 bg-white/5">
+                  <Image src="/images/logo.png" alt="PlazaBite" fill className="object-cover" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-base font-black tracking-tight text-white uppercase font-heading">
+                      {activeCafeName || 'PLAZABITE'}
+                    </span>
+                    <span className="text-[9px] bg-red-600 text-white font-bold px-1.5 py-0.5 rounded-full uppercase tracking-wider">
+                      {activeCafeName ? 'Cafe' : 'Plaza'}
+                    </span>
+                  </div>
+                  <span className="text-[10px] text-zinc-400 block font-normal">
+                    {activeCafeName ? 'Direct Table Service' : 'Multi-Cafe Shared Dining'}
+                  </span>
+                </div>
+              </div>
+              <button 
+                onClick={() => setIsMenuOpen(false)}
+                className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors cursor-pointer"
+                aria-label="Close options"
+              >
+                <X size={16} />
+              </button>
+            </div>
+
+            {/* Scrollable Drawer Body */}
+            <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-slate-50/70">
+              {/* Seating / Table Card */}
+              <div className="p-3.5 bg-white border border-slate-200 rounded-2xl shadow-xs flex items-center justify-between">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-9 h-9 rounded-xl bg-red-50 text-[#E50914] flex items-center justify-center font-bold">
+                    <MapPin size={18} />
+                  </div>
                   <div>
-                    <span className="text-[11px] font-bold text-red-600 uppercase tracking-wider block">Your Table</span>
-                    <span className="text-lg font-black text-slate-900">Table #{tableNumber}</span>
+                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Your Table</span>
+                    <span className="text-base font-black text-slate-900">Table #{tableNumber || '4'}</span>
                   </div>
-                  <button
-                    onClick={() => {
-                      setIsMenuOpen(false)
-                      setIsTableModalOpen(true)
-                    }}
-                    className="text-xs font-bold text-red-600 underline"
-                  >
-                    Change
-                  </button>
                 </div>
-              </div>
-
-              <nav className="py-4 space-y-2">
-                <button 
-                  onClick={handleCallWaiter}
-                  className="w-full flex items-center gap-3 p-3 rounded-2xl hover:bg-red-50 text-slate-800 font-semibold text-sm transition-colors text-left"
-                >
-                  <div className="w-8 h-8 rounded-full bg-red-100 text-red-600 flex items-center justify-center">
-                    <Bell size={16} />
-                  </div>
-                  <span>Call Waiter / Service</span>
-                </button>
-
-                <a 
-                  href="tel:+919876543210"
-                  className="w-full flex items-center gap-3 p-3 rounded-2xl hover:bg-red-50 text-slate-800 font-semibold text-sm transition-colors text-left"
-                >
-                  <div className="w-8 h-8 rounded-full bg-slate-100 text-slate-700 flex items-center justify-center">
-                    <PhoneCall size={16} />
-                  </div>
-                  <span>Contact Plaza Support</span>
-                </a>
-
-                <div 
+                <button
                   onClick={() => {
                     setIsMenuOpen(false)
-                    toast.info('Orders are tracked live via bottom cart status.')
+                    setIsTableModalOpen(true)
                   }}
-                  className="w-full flex items-center gap-3 p-3 rounded-2xl hover:bg-red-50 text-slate-800 font-semibold text-sm transition-colors text-left cursor-pointer"
+                  className="text-xs font-bold text-[#E50914] hover:bg-red-50 border border-red-200 px-3 py-1.5 rounded-xl transition-colors cursor-pointer"
                 >
-                  <div className="w-8 h-8 rounded-full bg-slate-100 text-slate-700 flex items-center justify-center">
-                    <History size={16} />
-                  </div>
-                  <span>Order Status & History</span>
-                </div>
+                  Change Table
+                </button>
+              </div>
 
-                <div className="pt-2 border-t border-slate-100">
-                  <span className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 px-3 py-1 block">
-                    For Businesses & Owners
-                  </span>
-                  
+              {/* Guest Services */}
+              <div className="space-y-1.5">
+                <span className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 px-2 block">
+                  Guest Dining Services
+                </span>
+
+                <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden divide-y divide-slate-100 shadow-xs">
+                  <button 
+                    onClick={handleCallWaiter}
+                    className="w-full flex items-center justify-between p-3.5 hover:bg-slate-50 transition-colors text-left cursor-pointer group"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-xl bg-red-50 text-[#E50914] flex items-center justify-center shrink-0">
+                        <Bell size={16} />
+                      </div>
+                      <div>
+                        <span className="block text-xs font-bold text-slate-900 group-hover:text-[#E50914] transition-colors">Call Waiter / Service</span>
+                        <span className="text-[11px] text-slate-500">Notify floor staff to Table #{tableNumber || '4'}</span>
+                      </div>
+                    </div>
+                    <ChevronRight size={14} className="text-slate-400" />
+                  </button>
+
+                  <a 
+                    href="tel:+919876543210"
+                    className="w-full flex items-center justify-between p-3.5 hover:bg-slate-50 transition-colors text-left cursor-pointer group"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center shrink-0">
+                        <PhoneCall size={16} />
+                      </div>
+                      <div>
+                        <span className="block text-xs font-bold text-slate-900 group-hover:text-[#E50914] transition-colors">Contact Plaza Support</span>
+                        <span className="text-[11px] text-slate-500">Help desk & payment inquiries</span>
+                      </div>
+                    </div>
+                    <ChevronRight size={14} className="text-slate-400" />
+                  </a>
+
+                  <div 
+                    onClick={() => {
+                      setIsMenuOpen(false)
+                      toast.info('Active orders are tracked live at the bottom cart drawer.')
+                    }}
+                    className="w-full flex items-center justify-between p-3.5 hover:bg-slate-50 transition-colors text-left cursor-pointer group"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center shrink-0">
+                        <History size={16} />
+                      </div>
+                      <div>
+                        <span className="block text-xs font-bold text-slate-900 group-hover:text-[#E50914] transition-colors">Order Status & History</span>
+                        <span className="text-[11px] text-slate-500">Track kitchen preparation & KOT</span>
+                      </div>
+                    </div>
+                    <ChevronRight size={14} className="text-slate-400" />
+                  </div>
+                </div>
+              </div>
+
+              {/* Kitchen & Platform Portals */}
+              <div className="space-y-1.5">
+                <span className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 px-2 block">
+                  Kitchen & Management
+                </span>
+
+                <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden divide-y divide-slate-100 shadow-xs">
+                  <Link
+                    href="/partner"
+                    onClick={() => setIsMenuOpen(false)}
+                    className="w-full flex items-center justify-between p-3.5 hover:bg-slate-50 transition-colors text-left group"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center shrink-0">
+                        <Sparkles size={16} />
+                      </div>
+                      <div>
+                        <span className="block text-xs font-bold text-slate-900 group-hover:text-[#E50914] transition-colors">Kitchen Staff Login</span>
+                        <span className="text-[11px] text-slate-500">Access kitchen order screen</span>
+                      </div>
+                    </div>
+                    <ChevronRight size={14} className="text-slate-400" />
+                  </Link>
+
+                  <Link
+                    href="/admin"
+                    onClick={() => setIsMenuOpen(false)}
+                    className="w-full flex items-center justify-between p-3.5 hover:bg-slate-50 transition-colors text-left group"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center shrink-0">
+                        <Shield size={16} />
+                      </div>
+                      <div>
+                        <span className="block text-xs font-bold text-slate-900 group-hover:text-[#E50914] transition-colors">Food Court Admin</span>
+                        <span className="text-[11px] text-slate-500">Manage outlets & table QR codes</span>
+                      </div>
+                    </div>
+                    <ChevronRight size={14} className="text-slate-400" />
+                  </Link>
+
                   <button
                     onClick={() => {
                       setIsMenuOpen(false)
                       setIsRegisterModalOpen(true)
                     }}
-                    className="w-full flex items-center gap-3 p-3 rounded-2xl hover:bg-red-50 text-slate-800 font-semibold text-sm transition-colors text-left"
+                    className="w-full flex items-center justify-between p-3.5 hover:bg-slate-50 transition-colors text-left cursor-pointer group"
                   >
-                    <div className="w-8 h-8 rounded-full bg-red-100 text-red-600 flex items-center justify-center">
-                      <Store size={16} />
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-xl bg-red-50 text-[#E50914] flex items-center justify-center shrink-0">
+                        <Store size={16} />
+                      </div>
+                      <div>
+                        <span className="block text-xs font-bold text-slate-900 group-hover:text-[#E50914] transition-colors">Partner Cafe Application</span>
+                        <span className="text-[11px] text-slate-500">Apply to list in this food court</span>
+                      </div>
                     </div>
-                    <div>
-                      <span className="block font-bold">Partner Cafe Request</span>
-                      <span className="text-[11px] text-slate-400 font-normal">Join this food court</span>
-                    </div>
+                    <ChevronRight size={14} className="text-slate-400" />
                   </button>
-
-                  <Link
-                    href="/admin"
-                    onClick={() => setIsMenuOpen(false)}
-                    className="w-full flex items-center gap-3 p-3 rounded-2xl hover:bg-slate-100 text-slate-800 font-semibold text-sm transition-colors text-left"
-                  >
-                    <div className="w-8 h-8 rounded-full bg-slate-100 text-slate-700 flex items-center justify-center">
-                      <Shield size={16} />
-                    </div>
-                    <div>
-                      <span className="block font-bold">Food Court Owner Admin</span>
-                      <span className="text-[11px] text-slate-400 font-normal">Manage vendors & accept requests</span>
-                    </div>
-                  </Link>
-
-                  <Link
-                    href="/shop/11111111-1111-1111-1111-111111111111/dashboard"
-                    onClick={() => setIsMenuOpen(false)}
-                    className="w-full flex items-center gap-3 p-3 rounded-2xl hover:bg-slate-100 text-slate-800 font-semibold text-sm transition-colors text-left"
-                  >
-                    <div className="w-8 h-8 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center">
-                      <Sparkles size={16} />
-                    </div>
-                    <div>
-                      <span className="block font-bold">Caffellon Kitchen Live</span>
-                      <span className="text-[11px] text-slate-400 font-normal">View incoming orders & sound</span>
-                    </div>
-                  </Link>
 
                   <Link
                     href="/"
                     onClick={() => setIsMenuOpen(false)}
-                    className="w-full flex items-center gap-3 p-3 rounded-2xl hover:bg-slate-100 text-slate-800 font-semibold text-sm transition-colors text-left"
+                    className="w-full flex items-center justify-between p-3.5 hover:bg-slate-50 transition-colors text-left group"
                   >
-                    <div className="w-8 h-8 rounded-full bg-red-50 text-[#E50914] flex items-center justify-center">
-                      <QrCode size={16} />
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center shrink-0">
+                        <QrCode size={16} />
+                      </div>
+                      <div>
+                        <span className="block text-xs font-bold text-slate-900 group-hover:text-[#E50914] transition-colors">PlazaBite Platform Home</span>
+                        <span className="text-[11px] text-slate-500">Overview, install app & features</span>
+                      </div>
                     </div>
-                    <div>
-                      <span className="block font-bold">PlazaBite Platform Home</span>
-                      <span className="text-[11px] text-slate-400 font-normal">Platform overview & features</span>
-                    </div>
+                    <ChevronRight size={14} className="text-slate-400" />
                   </Link>
                 </div>
-              </nav>
+              </div>
             </div>
 
-            <div className="pt-4 border-t border-slate-100 text-xs text-slate-400">
-              <p className="font-medium">Shared Dining Hall Service</p>
-              <p className="text-[10px] mt-0.5">Powered by PlazaBite</p>
+            {/* Drawer Footer */}
+            <div className="p-4 border-t border-slate-200 bg-white text-xs text-slate-400 text-center shrink-0">
+              <p className="font-semibold text-slate-600">PlazaBite Food Court System</p>
+              <p className="text-[10px] text-slate-400 mt-0.5">Direct Table Service • Zero Commission</p>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
       {/* Register Cafe Request Modal */}
