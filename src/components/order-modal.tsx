@@ -37,18 +37,19 @@ export function OrderModal() {
   const [diningMode, setDiningMode] = useState<'dine_in' | 'takeaway'>('takeaway')
   const [shop, setShop] = useState<Shop | null>(null)
 
-  if (!isCheckoutOpen) return null
-
-  const totalAmount = getTotal()
   const primaryShopId = items[0]?.shop_id || '11111111-1111-1111-1111-111111111111'
 
   useEffect(() => {
-    if (primaryShopId) {
+    if (isCheckoutOpen && primaryShopId) {
       getShop(primaryShopId).then(s => {
         if (s) setShop(s)
       })
     }
-  }, [primaryShopId])
+  }, [isCheckoutOpen, primaryShopId])
+
+  if (!isCheckoutOpen) return null
+
+  const totalAmount = getTotal()
 
   // Direct Shop Payment: Use specific shop UPI ID if configured
   const merchantUpiId = shop?.upi_id || 'caffellon@okhdfcbank'

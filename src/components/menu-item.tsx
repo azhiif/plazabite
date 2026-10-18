@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import Image from 'next/image'
 import { Plus, Minus, Star, Utensils } from 'lucide-react'
 import { Item } from '@/lib/types'
@@ -8,6 +9,7 @@ import { Badge } from '@/components/ui/badge'
 
 export function MenuItem({ item }: { item: Item }) {
   const { items, addItem, updateQuantity } = useCart()
+  const [imageError, setImageError] = useState(false)
   const cartItem = items.find((i) => i.id === item.id)
   const quantity = cartItem?.quantity || 0
 
@@ -15,13 +17,14 @@ export function MenuItem({ item }: { item: Item }) {
     <div className="group relative bg-white p-3.5 sm:p-4 rounded-3xl shadow-xs hover:shadow-md border border-slate-100 flex items-center justify-between gap-3 sm:gap-4 transition-all duration-200">
       {/* Food Photo Container */}
       <div className="relative w-22 h-22 sm:w-24 sm:h-24 rounded-2xl overflow-hidden bg-slate-100 shrink-0 shadow-inner">
-        {item.image_url ? (
+        {item.image_url && !imageError ? (
           <Image
             src={item.image_url}
             alt={item.name}
             fill
             sizes="(max-width: 640px) 96px, 110px"
             className="object-cover group-hover:scale-105 transition-transform duration-300"
+            onError={() => setImageError(true)}
           />
         ) : (
           <div className="flex items-center justify-center h-full text-slate-300">

@@ -53,3 +53,25 @@ where slug = 'wok-express' or id = '88888888-8888-8888-8888-888888888888';
 
 -- 5. Verification Query (Run this to verify UPI IDs are set)
 select id, name, phone, pin, upi_id from shops order by name;
+
+
+-- 6. Fix 404 Image URLs for Caffellon Dishes
+update items 
+set image_url = 'https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?auto=format&fit=crop&w=600&q=80' 
+where id = 'c1010101-0000-0000-0000-000000000005' or image_url like '%1644781489704%';
+
+update items 
+set image_url = 'https://images.unsplash.com/photo-1573080496219-bb080dd4f877?auto=format&fit=crop&w=600&q=80' 
+where id = 'c1010101-0000-0000-0000-000000000007' or image_url like '%1576107232684%';
+
+update items 
+set image_url = 'https://images.unsplash.com/photo-1567620832903-9fc6debc209f?auto=format&fit=crop&w=600&q=80' 
+where id = 'c1010101-0000-0000-0000-000000000011' or image_url like '%1527477378408%';
+
+update items 
+set image_url = 'https://images.unsplash.com/photo-1496116218417-1a781b1c416c?auto=format&fit=crop&w=600&q=80' 
+where id = '30303030-0000-0000-0000-000000000002' or image_url like '%1625242662367%';
+
+update items 
+set image_url = 'https://images.unsplash.com/photo-1625813506062-0aeb1d7a094b?auto=format&fit=crop&w=600&q=80' 
+where id = 'bb707070-0000-0000-0000-000000000003' or image_url like '%1639024471287%';
